@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<string.h>
+#include"error.h"
 #include"utils.h"
 
 enum Action {
@@ -65,7 +66,7 @@ int main(int argc, char** argv) {
 			strcpy(input.target, argv[i + 1]);
 			++i;
 		}
-		else if (strcmp(argv[i], "-arg") == 0) {
+		else if (strcmp(argv[i], "-md") == 0) {
 			check_conflict(ArgConflict, arg_set, i);
 			++arg_set;
 			if (i == argc - 1) {
@@ -85,6 +86,14 @@ int main(int argc, char** argv) {
 			check_conflict(ArgConflict, arg_set, i);
 			input.action = List;
 			++act_set;
+		}
+		else if (strcmp(argv[i], "-h") == 0) {
+			pr_help();
+			return 1;
+		}
+		else if (strcmp(argv[i], "--setup") == 0) {
+			setup();
+			return 1;
 		}
 		else {
 			printf("Unrecognized argument '%s'\n", argv[i]);

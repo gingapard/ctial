@@ -3,20 +3,9 @@
 
 #include<stdio.h>
 
-enum ErrorArg {
-	ActionConflict,
-	ActionMissing,
-	TargetConflict,
-	TargetMissingEx,
-	TargetMissing,
-	ArgConflict,
-	ArgMissingEx,
-	ArgMissing,
-};
-
-void pr_usage();
-void pr_help();
-void pr_err_arg(enum ErrorArg err, int pos);
-void check_conflict(enum ErrorArg err, int set, int pos);
+char* get_password();
+int dir_exists(const char* path);
+void veridy_file_struct();
+void setup();
 
 #endif
