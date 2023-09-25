@@ -95,6 +95,10 @@ int main(int argc, char** argv) {
 			setup();
 			return 1;
 		}
+		else if (strcmp(argv[i], "-passwd") == 0) {
+			// todo change_passwd();
+			return 1;
+		}
 		else {
 			printf("Unrecognized argument '%s'\n", argv[i]);
 			return 1;

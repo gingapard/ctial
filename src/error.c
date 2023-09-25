@@ -38,6 +38,14 @@ void pr_err_arg(enum ErrorArg err, int pos) {
 	}
 }
 
+void pr_err_pass(enum ErrorPass err) {
+	switch (err) {
+		case Empty:
+			printf("\nPassword cannot be empty!\n\n");
+			break;
+	}
+}
+
 void check_conflict(enum ErrorArg err, int set, int pos) {
 	if (set != 0) {
 		pr_err_arg(err, pos);
