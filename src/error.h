@@ -16,6 +16,7 @@ enum ErrorArg {
 
 enum ErrorPass {
 	Empty,
+	Wrong,
 };
 
 void pr_usage();

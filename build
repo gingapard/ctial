@@ -1,1 +1,1 @@
-gcc main.c error.c utils.c -o main -lcrypt
+gcc src/main.c src/error.c src/utils.c src/actions.c -o main -lcrypt

@@ -2,19 +2,7 @@
 #include<string.h>
 #include"error.h"
 #include"utils.h"
-
-enum Action {
-	Insert,
-	Delete,
-	Modify,
-	List,
-};
-
-typedef struct {
-	enum Action action;
-	char target[64];
-	char arg[64];
-} Input;
+#include"actions.h"
 
 int main(int argc, char** argv) {
 	if (argc < 2) {
@@ -66,7 +54,7 @@ int main(int argc, char** argv) {
 			strcpy(input.target, argv[i + 1]);
 			++i;
 		}
-		else if (strcmp(argv[i], "-md") == 0) {
+		else if (strcmp(argv[i], "-m") == 0) {
 			check_conflict(ArgConflict, arg_set, i);
 			++arg_set;
 			if (i == argc - 1) {
@@ -105,7 +93,11 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	printf("Action: %d, target: %s, argument: %s\n", input.action, input.target, input.arg);
+	switch (input.action) {
+		case Insert:
+			insert(input);
+			break;
+	}
 
 	return 0;
 }

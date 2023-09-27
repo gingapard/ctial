@@ -43,6 +43,9 @@ void pr_err_pass(enum ErrorPass err) {
 		case Empty:
 			printf("\nPassword cannot be empty!\n\n");
 			break;
+		case Wrong:
+			printf("Sorry, try again.\n");
+			break;
 	}
 }
 

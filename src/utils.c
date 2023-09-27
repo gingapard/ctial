@@ -6,10 +6,23 @@
 #include<dirent.h>
 #include<sys/stat.h>
 #include<crypt.h>
+#include"actions.h"
 #include"utils.h"
 #include"error.h"
 
 #define MAX_LENGTH 64
+
+char* get_home() {
+    char* tmp = getenv("HOME");
+    char* homeDIR = (char*)malloc(sizeof(tmp));
+    strcpy(homeDIR, tmp);
+    if (homeDIR == NULL) {
+        fprintf(stderr, "HOME environment variable not set.\n");
+        exit(1);
+    }
+
+    return homeDIR;
+}
 
 char* get_password() {
     struct termios t, backup;
@@ -44,14 +57,8 @@ int dir_exists(const char* path) {
 }
 
 void verify_file_struct() {
-    // getting home dir
-    const char* homeDIR = getenv("HOME");
-    if (homeDIR == NULL) {
-        fprintf(stderr, "HOME environment variable not set.\n");
-        exit(1);
-    }
-
     char fullPath[PATH_MAX];
+    const char* homeDIR = getenv("HOME");
     // formating path
     snprintf(fullPath, sizeof(fullPath), "%s/%s", homeDIR, ".ctial");
     
@@ -76,7 +83,7 @@ void verify_file_struct() {
         fflush(stdout);
         fgets(buffer, sizeof(buffer), stdin);
 
-        if (strcmp("Y", buffer) == 0 && strcmp("y", buffer) == 0) {
+        if (strcmp("Y", buffer) == 0 && strcmp("y", buffer) == 0 && strcmp("\n", buffer) == 0) {
             puts("Abort.");
             exit(1);
         }
@@ -88,15 +95,18 @@ void verify_file_struct() {
 }
 
 void setup() {
-    const char* homeDIR = getenv("HOME");
+    const char* homeDIR = get_home();;
     verify_file_struct();
     int passeq = 0;
     char fullPath[PATH_MAX];
     snprintf(fullPath, sizeof(fullPath), "%s/%s/%s", homeDIR, ".ctial", "master");
+
+    char hash_pass1[MAX_LENGTH + 1];
+    char hash_pass2[MAX_LENGTH + 1];
+
     // getting password
     do {
         printf("Master: ");
-        char* hash_pass1 = (char*)malloc(MAX_LENGTH + 1); 
         char* pass_str = get_password();
         // checking if input is empty
         if (strlen(pass_str) == 0) {
@@ -104,12 +114,11 @@ void setup() {
             continue;
         }
 
+        // hasing password
         strcpy(hash_pass1, crypt(pass_str, "master"));
-        hash_pass1[strlen(hash_pass1)] = '\0';
         printf("\n");
 
         printf("Retype Master: ");
-        char* hash_pass2 = (char*)malloc(MAX_LENGTH + 1); 
         char* pass_str_2 = get_password();
         // checking if input is empty
         if (strlen(pass_str_2) == 0) {
@@ -117,23 +126,21 @@ void setup() {
             continue;
         }
 
+        // hasing password
         strcpy(hash_pass2, crypt(pass_str_2, "master"));
-        hash_pass2[strlen(hash_pass2)] = '\0';
         printf("\n");
         
         if (strcmp(hash_pass1, hash_pass2) == 0) {
             FILE* fp = fopen(fullPath, "w");
-            fwrite(hash_pass1, 1, sizeof(hash_pass1), fp);
+            fwrite(hash_pass1, 1, strlen(hash_pass1), fp);
             fclose(fp);
-            puts("Master Password Saved.");
+            puts("Success.");
             passeq = 1;
         }
         else {
-            puts("Passwords did not match");
+            puts("Sorry, did not match.");
         }
 
-        free(hash_pass1);
-        free(hash_pass2);
 
     } while (passeq == 0);
 }
